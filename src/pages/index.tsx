@@ -2,26 +2,38 @@ import { FC } from "react";
 
 import { createClient } from "next-sanity";
 
-type Section = {
-  _id: string,
+import { Paragraph, Subheader, SectionHeader } from "../components";
+
+type SectionsPropTypes = {
   header: string;
-  subheader: string;
+  _id: string;
+  subheader?: string;
   mainText: any;
-  image: string;
+  image: any;
+}[];
+
+type HomePagePropTypes = {
+  sections: SectionsPropTypes[];
 };
 
-type PropTypes = {
-  sections: Section[];
-};
-
-const Home: FC<PropTypes> = ({ sections }: PropTypes) => {
+const Home: FC<HomePagePropTypes> = ({ sections }: HomePagePropTypes) => {
   return (
     <>
       {sections.length > 0 && (
         <ul>
-          {sections.map((section) => (
-            <li key={section._id}>{section?.header}</li>
-          ))}
+          {sections.map((section: any) => {
+            return (
+              <li key={section._id}>
+                <SectionHeader>{section.header}</SectionHeader>
+                {section.subheader && (
+                  <Subheader>{section.subheader}</Subheader>
+                )}
+                {section.mainText && (
+                  <Paragraph textObject={section.mainText} />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </>
@@ -36,7 +48,11 @@ const client = createClient({
 });
 
 export async function getStaticProps() {
-  const sections: any[] = await client.fetch(`*`);
+  const homePage: HomePagePropTypes =
+    await client.fetch(`*[_type == "homePage"][0]{
+    sections[]->{header, _id, subheader, mainText}
+  }`);
+  const sections = homePage.sections;
 
   return {
     props: {
