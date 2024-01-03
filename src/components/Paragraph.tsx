@@ -6,8 +6,6 @@ import {
   PortableTextMarkComponentProps,
 } from "@portabletext/react";
 
-import { TypographyProps } from "../types";
-
 const components: PortableTextComponents = {
   marks: {
     em: ({ children }: PortableTextMarkComponentProps) => (

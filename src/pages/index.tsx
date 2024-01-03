@@ -47,7 +47,7 @@ const client = createClient({
   useCdn: false,
 });
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const homePage: HomePagePropTypes =
     await client.fetch(`*[_type == "homePage"][0]{
     sections[]->{header, _id, subheader, mainText}
